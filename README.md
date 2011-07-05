@@ -19,3 +19,5 @@ and
 Run bundle install.	
 
 
+##js library options and docs
+See [file-upload](https://github.com/jgoguen/file-uploader) 
