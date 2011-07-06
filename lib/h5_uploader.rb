@@ -6,10 +6,6 @@ module Fg
   module H5Uploader
 
     def uploader_js_content name,options
-      options[:id] = uploader_field_id(name)
-      options[:action] ||= '/public/system/'
-      options[:allowedExtensions] ||= []
-
       jss = "var uploader = new qq.FileUploader({"
       jss = jss <<  "element: document.getElementById('#{options[:id]}'),"
       jss = jss << "allowedExtensions: #{options[:allowedExtensions].to_s}"
@@ -25,6 +21,12 @@ module Fg
     def uploader_field_id(label)
       "field-uploader_#{label}"
     end
+    
+    def parse_uploader_options options,name
+      options[:id] = uploader_field_id(name)
+      options[:action] ||= '/public/system/'
+      options[:allowedExtensions] ||= []    
+    end  
 
   end
 
@@ -39,9 +41,11 @@ module ActionView
       include Fg::H5Uploader 
         
       def uploader(method,*args)
-
+        options = args.extract_options!
+        parse_uploader_options options,method
+        
         js_tag = @template.javascript_tag do
-          uploader_js_content method,args.extract_options!
+          uploader_js_content method,options
         end
 
         @template.content_tag(:div,:id => options[:id]) do
@@ -55,10 +59,14 @@ module ActionView
     end
 
     module FormTagHelper
+      
+      include Fg::H5Uploader
 
       def uploader_field_tag(name, *args)
-
-        js_tag = javascript_tag(uploader_js_content(name,args.extract_options!))
+        options = args.extract_options!
+        parse_uploader_options options,name
+        
+        js_tag = javascript_tag(uploader_js_content(name,options))
         div_tag = content_tag(:div,content_tag(:noscript,file_field_tag(name)),:id => options[:id])
         div_tag << js_tag
 
