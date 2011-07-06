@@ -1,14 +1,23 @@
-Set up
-====
+##Install
+	
+	gem install h5_uploader
+	
 
-config/application.rb
-----
+##Set up
+Run the install task that copy the necessary js and css resources.
 
-Add requre after the rails require statement
+	rake h5_uploader:install
 
-__require "rack-raw-upload"__
+In config/application.rb add the following settings:
 
-Add the middleware config
+	require "rack-raw-upload"
+	
+and
 
-__config.middleware.use 'Rack::RawUpload'__
+	config.middleware.use 'Rack::RawUpload'
+	
+Run bundle install.	
 
+
+##js library options and docs
+See [file-upload](https://github.com/jgoguen/file-uploader) 

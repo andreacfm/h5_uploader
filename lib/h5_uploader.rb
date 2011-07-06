@@ -5,26 +5,47 @@ module Fg
 
   module H5Uploader
 
-    class ActionView::Helpers::FormBuilder
+    def uploader_js_content name,options
+      jss = "var uploader = new qq.FileUploader({"
+      jss = jss <<  "element: document.getElementById('#{options[:id]}'),"
+      jss = jss << "allowedExtensions: #{options[:allowedExtensions].to_s}"
 
+      options.each do |key,value| next if [:id,:allowedExtensions].include?(key)
+        jss = jss << ",#{key} : '#{value}'"
+      end
+
+      jss = jss << "});"            
+
+    end
+
+    def uploader_field_id(label)
+      "field-uploader_#{label}"
+    end
+    
+    def parse_uploader_options options,name
+      options[:id] = uploader_field_id(name)
+      options[:action] ||= '/public/system/'
+      options[:allowedExtensions] ||= []    
+    end  
+
+  end
+
+end
+
+module ActionView
+
+  module Helpers
+
+    class FormBuilder
+      
+      include Fg::H5Uploader 
+        
       def uploader(method,*args)
         options = args.extract_options!
-        options[:id] = field_id(method)
-        options[:action] ||= '/public/system/'
-        options[:allowedExtensions] ||= []
-
-        jss = "var uploader = new qq.FileUploader({"
-        jss = jss <<  "element: document.getElementById('#{options[:id]}'),"
-        jss = jss << "allowedExtensions: #{options[:allowedExtensions].to_s}"
-
-        options.each do |key,value| next if [:id,:allowedExtensions].include?(key)
-          jss = jss << ",#{key} : '#{value}'"
-        end
-
-        jss = jss << "});"
-
+        parse_uploader_options options,method
+        
         js_tag = @template.javascript_tag do
-          jss
+          uploader_js_content method,options
         end
 
         @template.content_tag(:div,:id => options[:id]) do
@@ -35,8 +56,20 @@ module Fg
 
       end
 
-      def field_id(label)
-        "field-uploader_#{label}"
+    end
+
+    module FormTagHelper
+      
+      include Fg::H5Uploader
+
+      def uploader_field_tag(name, *args)
+        options = args.extract_options!
+        parse_uploader_options options,name
+        
+        js_tag = javascript_tag(uploader_js_content(name,options))
+        div_tag = content_tag(:div,content_tag(:noscript,file_field_tag(name)),:id => options[:id])
+        div_tag << js_tag
+
       end
 
     end
@@ -44,4 +77,5 @@ module Fg
   end
 
 end  
+
 
