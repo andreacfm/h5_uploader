@@ -19,4 +19,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency 'rack-raw-upload'
+  s.add_dependency 'actionpack'
 end

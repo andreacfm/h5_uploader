@@ -6,12 +6,13 @@ module Fg
   module H5Uploader
 
     def uploader_js_content name,options
-      jss = "var uploader = new qq.FileUploader({"
+      jss = "var uploader_#{options[:id]} = new qq.FileUploader({"
       jss = jss <<  "element: document.getElementById('#{options[:id]}'),"
       jss = jss << "allowedExtensions: #{options[:allowedExtensions].to_s}"
+      jss = jss << ",params: #{options[:params].to_json}" unless options[:params].nil?  
 
-      options.each do |key,value| next if [:id,:allowedExtensions].include?(key)
-        jss = jss << ",#{key} : '#{value}'"
+      options.each do |key,value| next if [:id,:allowedExtensions,:params].include?(key)
+        jss = jss << ",#{key}: '#{value}'"
       end
 
       jss = jss << "});"            
@@ -19,13 +20,14 @@ module Fg
     end
 
     def uploader_field_id(label)
-      "field-uploader_#{label}"
+      "field_uploader_#{label}"
     end
     
     def parse_uploader_options options,name
       options[:id] = uploader_field_id(name)
       options[:action] ||= '/public/system/'
-      options[:allowedExtensions] ||= []    
+      options[:allowedExtensions] ||= []
+      options[:params] ||= {}
     end  
 
   end
