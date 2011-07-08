@@ -23,8 +23,8 @@ Run bundle install.
 See [file-upload](https://github.com/jgoguen/file-uploader)
 
 ##Custom options
-Added a custom  option  *evalResponse*  default to true. This is useful when Rails resturn a js to be evaluated and not to be converted into json. If option is true
-a valid reponsed for the uploader is soemthing like this:
+Added a custom  option  *evalResponse*  default to false. This is useful when Rails return a js to be evaluated and not to be converted into json. Note that if multiple file are uploaded the code is evaluated for any response and not on upload complete. 
+If option is true a valid response for the uploader is soemthing like this:
 
 	(function(){
 	    
@@ -32,3 +32,4 @@ a valid reponsed for the uploader is soemthing like this:
 	
 		return {success:true};
 	})();
+	

@@ -12,7 +12,8 @@ module Fg
       jss = jss << ",params: #{options[:params].to_json}" unless options[:params].nil?  
 
       options.each do |key,value| next if [:id,:allowedExtensions,:params].include?(key)
-        jss = jss << ",#{key}: '#{value}'"
+        val = (key =~ /[^(on|show|mess)]/) > 0 ? "#{value}" : "'#{value}'" 
+        jss = jss << ",#{key}: #{val}"
       end
 
       jss = jss << "});"            
