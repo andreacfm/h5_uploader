@@ -20,4 +20,15 @@ Run bundle install.
 
 
 ##js library options and docs
-See [file-upload](https://github.com/jgoguen/file-uploader) 
+See [file-upload](https://github.com/jgoguen/file-uploader)
+
+##Custom options
+Added a custom  option  *evalResponse*  default to true. This is useful when Rails resturn a js to be evaluated and not to be converted into json. If option is true
+a valid reponsed for the uploader is soemthing like this:
+
+	(function(){
+	    
+		// your callback code here
+	
+		return {success:true};
+	})();
